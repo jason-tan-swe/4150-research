@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+      - name: order-service
+        image: order-service:local
+        ports:
+        - containerPort: 8082
+        volumeMounts:
+        - name: sqlite-storage
+          mountPath: /usr/src/app/db-data/order-service.db
+          subPath: order-service.db
+      volumes:
+      - name: sqlite-storage
+        persistentVolumeClaim:
+          claimName: order-service-pvc

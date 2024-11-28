@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+      - name: product-service
+        image: product-service:local
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - name: sqlite-storage
+          mountPath: /usr/src/app/db-data/product-service.db
+          subPath: product-service.db
+      volumes:
+      - name: sqlite-storage
+        persistentVolumeClaim:
+          claimName: product-service-pvc
