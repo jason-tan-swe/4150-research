@@ -1,13 +1,16 @@
 name: CI/CD Pipeline
 
 on:
+  # Trigger the workflow on push to the develop branch
+  push:
+    branches:
+      - develop
+
+  # Trigger the workflow on pull requests targeting the develop branch
   pull_request:
     branches:
       - develop
-      - main
-  push:
-    branches:
-      - '**' # Runs on pushes to all branches
+    types: [opened, synchronize, reopened]
 
 jobs:
   # Build Docker images for each service
