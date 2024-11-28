@@ -66,7 +66,7 @@ kubectl logs <pod-name>
 kubectl get pvc
 ```
 
-# Need to see what endpoints are available?
+### Need to see what endpoints are available?
 ```
 kubectl get endpoints
 ```

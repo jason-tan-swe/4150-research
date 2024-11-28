@@ -1,9 +1,11 @@
 import { Sequelize, DataTypes } from 'sequelize';
 
 // Initialize SQLite database
+const isTest = process.env.NODE_ENV === 'test';
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: '../db-data/user-service.db',
+  storage: isTest ? ':memory:' : '../db-data/user-service.db',
+  logging: isTest ? false : true,
 });
 
 // Define User model

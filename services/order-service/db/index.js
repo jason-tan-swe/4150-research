@@ -1,8 +1,10 @@
 import { Sequelize, DataTypes } from 'sequelize';
 
+const isTest = process.env.NODE_ENV === 'test';
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: '../db-data/order-service.db',
+  storage: isTest ? ':memory:' : '../db-data/order-service.db',
+  logging: isTest ? false : true,
 });
 
 const Order = sequelize.define('Order', {

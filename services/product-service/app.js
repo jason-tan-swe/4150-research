@@ -1,30 +1,31 @@
 import express, { json } from 'express';
-import { Product, initDb } from './db/index.js';
+import { initDb } from './db/index.js';
+import productRoutes from './routes/productRoutes.js';
 
 const app = express();
 app.use(json());
+app.use('/products', productRoutes);
 
-// Initialize database
-initDb();
-
+// Health check endpoint
 app.get('/health-check', (req, res) => {
   res.send('Product Service is up and running');
-})
-
-// List all products
-app.get('/products', async (req, res) => {
-  const products = await Product.findAll();
-  res.send(products);
 });
 
-// Get product details
-app.get('/products/:id', async (req, res) => {
-  const product = await Product.findByPk(req.params.id);
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ error: 'Product not found' });
+const startServer = async () => {
+  try {
+    // Initialize database
+    await initDb();
+
+    // Start the server
+    const server = app.listen(8081, () => {
+      console.log('Product Service running on port 8081')
+    });
+
+    return server;
+  } catch (error) {
+    console.error('Failed to initialize database', error);
+    process.exit(1);
   }
-});
+};
 
-app.listen(8081, () => console.log('Product Service running on port 8081'));
+export { app, startServer };

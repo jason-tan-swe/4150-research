@@ -1,41 +1,31 @@
 import express, { json } from 'express';
-import { Order, initDb } from './db/index.js';
+import { initDb } from './db/index.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 const app = express();
 app.use(json());
+app.use('/orders', orderRoutes);
 
-// Initialize database
-initDb();
-
+// Health check route
 app.get('/health-check', (req, res) => {
   res.send('Order Service is up and running');
-})
+});
 
-// Place a new order
-app.post('/orders', async (req, res) => {
-  const { id, userId, productId, quantity } = req.body;
+const startServer = async () => {
   try {
-    const order = await Order.create({ id, userId, productId, quantity });
-    res.status(201).send(order);
-  } catch (err) {
-    res.status(500).send({ error: 'Error creating order' });
+    // Initialize database
+    await initDb();
+
+    // Start the server
+    const server = app.listen(8082, () => {
+      console.log('Order Service running on port 8082');
+    });
+    return server;
+
+  } catch (error) {
+    console.error('Failed to initialize database', error);
+    process.exit(1);
   }
-});
+};
 
-// Get order details
-app.get('/orders/:id', async (req, res) => {
-  const order = await Order.findByPk(req.params.id);
-  if (order) {
-    res.send(order);
-  } else {
-    res.status(404).send({ error: 'Order not found' });
-  }
-});
-
-// List all orders for a user
-app.get('/orders/user/:id', async (req, res) => {
-  const orders = await Order.findAll({ where: { userId: req.params.id } });
-  res.send(orders);
-});
-
-app.listen(8082, () => console.log('Order Service running on port 8082'));
+export { app, startServer };
