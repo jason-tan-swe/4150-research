@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - develop
+      - main
     pull_request:
       branches:
         - main
+        - develop
       paths:
         - ".github/workflows/ci-cd.yaml"
 
@@ -134,7 +136,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          
+
       - name: Install pnpm
       run: npm install -g pnpm
 
