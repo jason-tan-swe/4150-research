@@ -5,12 +5,12 @@ on:
   push:
     branches:
       - develop
-      - main
   # Trigger the workflow on pull requests targeting the develop branch
   pull_request:
     branches:
-      - develop
-    types: [opened, synchronize, reopened]
+      - main
+    paths:
+      - ".github/workflows/ci-cd.yaml"
 
 jobs:
   # Build Docker images for each service
