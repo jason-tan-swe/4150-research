@@ -2,13 +2,14 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [develop]
-    pull_request:
-      branches:
-        - main
-        - develop
-      paths:
-        - ".github/workflows/ci-cd.yaml"
+    branches: 
+      - main
+      - develop
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - ".github/workflows/ci-cd.yaml"
 
 jobs:
   # Build Docker images for each service
