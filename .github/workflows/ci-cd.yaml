@@ -3,10 +3,12 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
     branches:
-      - develop
+      - main
+    paths:
+      - ".github/workflows/ci-cd.yaml"
 
 jobs:
   build:
