@@ -20,12 +20,12 @@ jobs:
         run: echo "$(date +%s%3N)" > start-time.txt
 
       - name: Set up Docker Layer Cache
-      uses: actions/cache@v3
-      with:
-        path: /tmp/.buildx-cache
-        key: docker-layer-cache-${{ runner.os }}
-        restore-keys: |
-          docker-layer-cache-
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: docker-layer-cache-${{ runner.os }}
+          restore-keys: |
+            docker-layer-cache-
 
       - name: Build Docker Image with Cache
         run: |
@@ -47,7 +47,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Build Order Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -94,7 +94,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -141,7 +141,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Build User Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -150,7 +150,6 @@ jobs:
           name: build-user-service-timing
           path: job-duration.txt
 
-  # Run unit and integration tests for each service
   test-order-service:
     name: Test Order Service
     runs-on: ubuntu-latest
@@ -191,7 +190,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Test Order Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -240,7 +239,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Test Product Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -289,7 +288,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Test User Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -298,7 +297,6 @@ jobs:
           name: test-user-service-timing
           path: job-duration.txt
 
-  # Deploy services to Kubernetes
   deploy:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
@@ -340,7 +338,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Deploy Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
@@ -348,8 +346,7 @@ jobs:
         with:
           name: deploy-timing
           path: job-duration.txt
-    
-  # Run centralized E2E tests
+
   test-e2e:
     name: Run End-to-End Tests
     runs-on: ubuntu-latest
@@ -381,7 +378,7 @@ jobs:
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
-          DURATION=$((END - START))
+          DURATION=$(echo "scale=3; ($END - $START) / 1000" | bc)
           echo "Test E2E Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
