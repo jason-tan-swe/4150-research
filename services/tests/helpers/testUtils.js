@@ -1,8 +1,8 @@
 import supertest from 'supertest';
 
-const userServiceUrl = 'http://localhost:8080'; // Adjust for Ingress if needed
-const productServiceUrl = 'http://localhost:8081';
-const orderServiceUrl = 'http://localhost:8082';
+const userServiceUrl = process.env.BASE_URL ?? 'http://localhost:8080'
+const productServiceUrl = process.env.BASE_URL ?? 'http://localhost:8081';
+const orderServiceUrl = process.env.BASE_URL ?? 'http://localhost:8082';
 
 export const createUser = async (id, name, password) => {
   const response = await supertest(userServiceUrl)
@@ -19,7 +19,6 @@ export const createProduct = async (id, name, price) => {
 };
 
 export const placeOrder = async (id, userId, productId, quantity) => {
-  console.log("Received: ", id, userId, productId, quantity);
   const response = await supertest(orderServiceUrl)
     .post('/orders')
     .send({ id, userId, productId, quantity });

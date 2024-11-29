@@ -204,4 +204,6 @@ jobs:
         run: pnpm install
 
       - name: Run E2E Tests
-        run: pnpm jest tests/e2e/
+        run: pnpm jest tests/e2e/ --verbose
+        env:
+          BASE_URL: http://4.227.46.180 # change to ingress
