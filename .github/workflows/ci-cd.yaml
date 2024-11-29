@@ -157,21 +157,19 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Set up Azure CLI
-        uses: azure/CLI@v1
-
       - name: Authenticate with Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set up AKS credentials
-        run: az aks get-credentials --resource-group aks-research-cluster_group --name aks-research-cluster
 
       - name: Set up Kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: 'v1.21.0'
+          version: 'latest'
+
+      - name: Set up AKS credentials
+        run: az aks get-credentials --resource-group aks-research-cluster_group --name aks-research-cluster
 
       - name: Deploy Services
         run: |
