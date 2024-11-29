@@ -19,8 +19,20 @@ jobs:
       - name: Start Timer
         run: echo "$(date +%s%3N)" > start-time.txt
 
-      - name: Build Docker Image
-        run: docker build -t order-service ./services/order-service
+       - name: Set up Docker Layer Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: docker-layer-cache-${{ runner.os }}
+          restore-keys: |
+            docker-layer-cache-
+
+      - name: Build Docker Image with Cache
+        run: |
+          docker build \
+          --cache-from=type=local,src=/tmp/.buildx-cache \
+          --cache-to=type=local,dest=/tmp/.buildx-cache \
+          -t order-service ./services/order-service
 
       - name: Tag Docker Image
         run: docker tag order-service research4150.azurecr.io/order-service:latest
@@ -54,8 +66,20 @@ jobs:
       - name: Start Timer
         run: echo "$(date +%s%3N)" > start-time.txt
 
-      - name: Build Docker Image
-        run: docker build -t product-service ./services/product-service
+      - name: Set up Docker Layer Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: docker-layer-cache-${{ runner.os }}
+          restore-keys: |
+            docker-layer-cache-
+
+      - name: Build Docker Image with Cache
+        run: |
+          docker build \
+          --cache-from=type=local,src=/tmp/.buildx-cache \
+          --cache-to=type=local,dest=/tmp/.buildx-cache \
+          -t product-service ./services/product-service
 
       - name: Tag Docker Image
         run: docker tag product-service research4150.azurecr.io/product-service:latest
@@ -89,8 +113,20 @@ jobs:
       - name: Start Timer
         run: echo "$(date +%s%3N)" > start-time.txt
 
-      - name: Build Docker Image
-        run: docker build -t user-service ./services/user-service
+      - name: Set up Docker Layer Cache
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: docker-layer-cache-${{ runner.os }}
+          restore-keys: |
+            docker-layer-cache-
+
+      - name: Build Docker Image with Cache
+        run: |
+          docker build \
+          --cache-from=type=local,src=/tmp/.buildx-cache \
+          --cache-to=type=local,dest=/tmp/.buildx-cache \
+          -t user-service ./services/user-service
 
       - name: Tag Docker Image
         run: docker tag user-service research4150.azurecr.io/user-service:latest
@@ -129,6 +165,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
+
+      - name: Cache pnpm Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('services/order-service/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -171,6 +215,14 @@ jobs:
         with:
           node-version: 22
 
+      - name: Cache pnpm Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('services/product-service/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
       - name: Install pnpm
         run: npm install -g pnpm
 
@@ -211,6 +263,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
+
+      - name: Cache pnpm Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('services/user-service/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
 
       - name: Install pnpm
         run: npm install -g pnpm
