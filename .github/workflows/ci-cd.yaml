@@ -39,7 +39,7 @@ jobs:
           echo "Build Order Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-order-service-timing
           path: job-duration.txt
@@ -74,7 +74,7 @@ jobs:
           echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-product-service-timing
           path: job-duration.txt
@@ -109,7 +109,7 @@ jobs:
           echo "Build User Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-user-service-timing
           path: job-duration.txt
@@ -151,7 +151,7 @@ jobs:
           echo "Test Order Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-order-service-timing
           path: job-duration.txt
@@ -192,7 +192,7 @@ jobs:
           echo "Test Product Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-product-service-timing
           path: job-duration.txt
@@ -233,7 +233,7 @@ jobs:
           echo "Test User Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-user-service-timing
           path: job-duration.txt
@@ -284,7 +284,7 @@ jobs:
           echo "Deploy Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: deploy-timing
           path: job-duration.txt
@@ -325,7 +325,7 @@ jobs:
           echo "Test E2E Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-e2e-timing
           path: job-duration.txt
