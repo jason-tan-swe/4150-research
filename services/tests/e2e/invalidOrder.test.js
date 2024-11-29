@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 
-const orderServiceUrl = 'http://localhost:8082';
+const orderServiceUrl = process.env.BASE_URL ?? 'http://localhost:8082';
 
 describe('E2E: Invalid Order Scenarios', () => {
   it('should return 404 for an invalid user ID', async () => {

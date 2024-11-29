@@ -2,7 +2,7 @@ import { createUser, createProduct, placeOrder } from '../helpers/testUtils.js';
 import supertest from 'supertest';
 import { v4 as uuidv4 } from 'uuid';
 
-const orderServiceUrl = 'http://localhost:8082';
+const orderServiceUrl = process.env.BASE_URL ?? 'http://localhost:8082';
 
 describe('E2E: Fetch Order Details Workflow', () => {
   it('should fetch the correct order details', async () => {
