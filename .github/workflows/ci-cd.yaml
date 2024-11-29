@@ -276,18 +276,21 @@ jobs:
           kubectl apply -f k8s/services/order-service-service.yml
           kubectl apply -f k8s/ingress.yml
 
-      - name: End Timer and Calculate Duration
+      - name: Measure Deployment Duration
         run: |
           START=$(cat start-time.txt)
+          kubectl rollout status deployment/user-service
+          kubectl rollout status deployment/product-service
+          kubectl rollout status deployment/order-service
           END=$(date +%s%3N)
           DURATION=$((END - START))
-          echo "Deploy Duration: $DURATION seconds" > job-duration.txt
+          echo "Deployment Duration: $DURATION milliseconds" >> deployment-timing.txt
 
-      - name: Upload Timing Logs
+      - name: Upload Deployment Timing Logs
         uses: actions/upload-artifact@v4
         with:
-          name: deploy-timing
-          path: job-duration.txt
+          name: deployment-timing
+          path: deployment-timing.txt
     
   # Run centralized E2E tests
   test-e2e:
@@ -317,15 +320,15 @@ jobs:
         env:
           BASE_URL: http://4.227.46.180 # change to ingress
 
-      - name: End Timer and Calculate Duration
+      - name: Measure E2E Test Duration
         run: |
           START=$(cat start-time.txt)
           END=$(date +%s%3N)
           DURATION=$((END - START))
-          echo "Test E2E Duration: $DURATION seconds" > job-duration.txt
+          echo "E2E Test Duration: $DURATION milliseconds" >> e2e-timing.txt
 
-      - name: Upload Timing Logs
+      - name: Upload E2E Timing Logs
         uses: actions/upload-artifact@v4
         with:
-          name: test-e2e-timing
-          path: job-duration.txt
+          name: e2e-timing
+          path: e2e-timing.txt
