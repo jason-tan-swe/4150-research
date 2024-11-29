@@ -70,3 +70,8 @@ kubectl get pvc
 ```
 kubectl get endpoints
 ```
+
+### Need to see logs in AKS?
+```
+kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
+```
