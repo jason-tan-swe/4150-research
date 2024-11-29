@@ -5,7 +5,7 @@
 
 ## Starting the Project
 
-### Need to deploy the whole app onto your cluster?
+### Need to deploy the whole app onto your local cluster?
 
 Do this from root:
 ```
@@ -37,6 +37,21 @@ http://localhost/products
 http://localhost/orders/1
 ```
 
+## Starting with AKS (Azure Kubernetes)
+Requirements
+- pnpm
+- Docker
+- kubectl
+- Azure CLI
+- An Azure account.
+- An Azure Kubernetes Service (AKS) cluster provisioned.
+- An Azure Container Registry (ACR) created.
+- A Service Principal with appropriate roles (e.g., Contributor, AcrPull).
+- `ACR_PASSWORD`: Azure Container Registry password.
+- `AZURE_CREDENTIALS`: Service principal credentials in JSON format.
+- `KUBECONFIG`: Base64-encoded Kubernetes configuration file.
+- `NGROK_AUTHTOKEN` (if ngrok is used).
+- Modify your own .kube/config to point towards the AKS
 
 ## Kubernetes Troubleshooting
 
