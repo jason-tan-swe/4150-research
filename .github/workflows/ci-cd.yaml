@@ -111,7 +111,7 @@ jobs:
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-product-service-timing
+          name: build-user-service-timing
           path: job-duration.txt
 
   # Run unit and integration tests for each service
@@ -153,7 +153,7 @@ jobs:
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-product-service-timing
+          name: test-order-service-timing
           path: job-duration.txt
 
   test-product-service:
@@ -194,7 +194,7 @@ jobs:
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-product-service-timing
+          name: test-product-service-timing
           path: job-duration.txt
 
   test-user-service:
@@ -235,7 +235,7 @@ jobs:
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-product-service-timing
+          name: test-user-service-timing
           path: job-duration.txt
 
   # Deploy services to Kubernetes
@@ -286,7 +286,7 @@ jobs:
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-product-service-timing
+          name: deploy-timing
           path: job-duration.txt
     
   # Run centralized E2E tests
@@ -327,5 +327,5 @@ jobs:
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-product-service-timing
+          name: test-e2e-timing
           path: job-duration.txt
