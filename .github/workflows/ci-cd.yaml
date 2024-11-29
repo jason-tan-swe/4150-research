@@ -148,7 +148,7 @@ jobs:
           START=$(cat start-time.txt)
           END=$(date +%s)
           DURATION=$((END - START))
-          echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
+          echo "Test Order Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
@@ -189,7 +189,7 @@ jobs:
           START=$(cat start-time.txt)
           END=$(date +%s)
           DURATION=$((END - START))
-          echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
+          echo "Test Product Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
@@ -230,7 +230,7 @@ jobs:
           START=$(cat start-time.txt)
           END=$(date +%s)
           DURATION=$((END - START))
-          echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
+          echo "Test User Service Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
@@ -281,7 +281,7 @@ jobs:
           START=$(cat start-time.txt)
           END=$(date +%s)
           DURATION=$((END - START))
-          echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
+          echo "Deploy Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
@@ -322,7 +322,7 @@ jobs:
           START=$(cat start-time.txt)
           END=$(date +%s)
           DURATION=$((END - START))
-          echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
+          echo "Test E2E Duration: $DURATION seconds" > job-duration.txt
 
       - name: Upload Timing Logs
         uses: actions/upload-artifact@v3
