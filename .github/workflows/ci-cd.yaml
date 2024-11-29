@@ -121,35 +121,11 @@ jobs:
           cd ./services/user-service
           pnpm jest --testPathPattern=__tests__
 
-  # Run centralized E2E tests
-  test-e2e:
-    name: Run End-to-End Tests
-    runs-on: ubuntu-latest
-    needs: [test-order-service, test-product-service, test-user-service]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install Dependencies
-        run: |
-          pnpm install
-
-      - name: Run E2E Tests
-        run: pnpm jest tests/e2e/
-
   # Deploy services to Kubernetes
   deploy:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
-    needs: [build-order-service, build-product-service, build-user-service, test-e2e]
+    needs: [build-order-service, build-product-service, build-user-service, test-order-service, test-product-service, test-user-service]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -172,3 +148,27 @@ jobs:
           kubectl apply -f k8s/services/product-service-service.yml
           kubectl apply -f k8s/services/order-service-service.yml
           kubectl apply -f k8s/ingress.yml
+    
+  # Run centralized E2E tests
+  test-e2e:
+    name: Run End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install Dependencies
+        run: |
+          pnpm install
+
+      - name: Run E2E Tests
+        run: pnpm jest tests/e2e/
