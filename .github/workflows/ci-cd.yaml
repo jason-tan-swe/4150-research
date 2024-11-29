@@ -19,13 +19,13 @@ jobs:
       - name: Start Timer
         run: echo "$(date +%s%3N)" > start-time.txt
 
-       - name: Set up Docker Layer Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-layer-cache-${{ runner.os }}
-          restore-keys: |
-            docker-layer-cache-
+      - name: Set up Docker Layer Cache
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: docker-layer-cache-${{ runner.os }}
+        restore-keys: |
+          docker-layer-cache-
 
       - name: Build Docker Image with Cache
         run: |
