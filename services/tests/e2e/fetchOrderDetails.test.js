@@ -2,9 +2,11 @@ import { createUser, createProduct, placeOrder } from '../helpers/testUtils.js';
 import supertest from 'supertest';
 import { v4 as uuidv4 } from 'uuid';
 
-const orderServiceUrl = 'http://localhost:8082';
+const orderServiceUrl = process.env.BASE_URL ?? 'http://localhost:8082';
 
 describe('E2E: Fetch Order Details Workflow', () => {
+  // bit of inconsistent test as latency between database insertion and 
+  // GET can be a bit delayed
   it('should fetch the correct order details', async () => {
     // Create a user
     const userId = uuidv4();

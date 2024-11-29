@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: user-service:local
+        image: research4150.azurecr.io/user-service:latest
         ports:
         - containerPort: 8080
         volumeMounts:

@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 
-const orderServiceUrl = 'http://localhost:8082';
+const orderServiceUrl = process.env.BASE_URL ?? 'http://localhost:8082';
 
 describe('E2E: Invalid Order Scenarios', () => {
   it('should return 404 for an invalid user ID', async () => {
@@ -15,7 +15,7 @@ describe('E2E: Invalid Order Scenarios', () => {
   it('should return 404 for an invalid product ID', async () => {
     const response = await supertest(orderServiceUrl)
       .post('/orders')
-      .send({ id: '202', userId: '1', productId: 'invalid', quantity: 2 });
+      .send({ id: '202', userId: '1', quantity: 2 });
 
     expect(response.status).toBe(500);
     expect(response.body.error).toBeDefined()

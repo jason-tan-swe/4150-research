@@ -20,8 +20,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: |
-          docker build -t order-service ./services/order-service
+        run: docker build -t order-service ./services/order-service
+
+      - name: Tag Docker Image
+        run: docker tag order-service research4150.azurecr.io/order-service:latest
+
+      - name: Login to Azure Container Registry
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login research4150.azurecr.io -u research4150 --password-stdin
+
+      - name: Push Docker Image to ACR
+        run: docker push research4150.azurecr.io/order-service:latest
 
   build-product-service:
     name: Build Product Service
@@ -31,8 +39,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: |
-          docker build -t product-service ./services/product-service
+        run: docker build -t product-service ./services/product-service
+
+      - name: Tag Docker Image
+        run: docker tag product-service research4150.azurecr.io/product-service:latest
+
+      - name: Login to Azure Container Registry
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login research4150.azurecr.io -u research4150 --password-stdin
+
+      - name: Push Docker Image to ACR
+        run: docker push research4150.azurecr.io/product-service:latest
 
   build-user-service:
     name: Build User Service
@@ -42,8 +58,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: |
-          docker build -t user-service ./services/user-service
+        run: docker build -t user-service ./services/user-service
+
+      - name: Tag Docker Image
+        run: docker tag user-service research4150.azurecr.io/user-service:latest
+
+      - name: Login to Azure Container Registry
+        run: echo "${{ secrets.ACR_PASSWORD }}" | docker login research4150.azurecr.io -u research4150 --password-stdin
+
+      - name: Push Docker Image to ACR
+        run: docker push research4150.azurecr.io/user-service:latest
 
   # Run unit and integration tests for each service
   test-order-service:
@@ -56,10 +80,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 22
 
       - name: Install pnpm
-      run: npm install -g pnpm
+        run: npm install -g pnpm
 
       - name: Install Dependencies
         run: |
@@ -81,10 +105,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 22
 
       - name: Install pnpm
-      run: npm install -g pnpm
+        run: npm install -g pnpm
 
       - name: Install Dependencies
         run: |
@@ -106,10 +130,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 22
 
       - name: Install pnpm
-      run: npm install -g pnpm
+        run: npm install -g pnpm
 
       - name: Install Dependencies
         run: |
@@ -121,35 +145,11 @@ jobs:
           cd ./services/user-service
           pnpm jest --testPathPattern=__tests__
 
-  # Run centralized E2E tests
-  test-e2e:
-    name: Run End-to-End Tests
-    runs-on: ubuntu-latest
-    needs: [test-order-service, test-product-service, test-user-service]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install pnpm
-      run: npm install -g pnpm
-
-      - name: Install Dependencies
-        run: |
-          pnpm install
-
-      - name: Run E2E Tests
-        run: pnpm jest tests/e2e/
-
   # Deploy services to Kubernetes
   deploy:
     name: Deploy to Kubernetes
     runs-on: ubuntu-latest
-    needs: [build-order-service, build-product-service, build-user-service, test-e2e]
+    needs: [build-order-service, build-product-service, build-user-service, test-order-service, test-product-service, test-user-service]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -157,8 +157,18 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
+      - name: Authenticate with Azure
+        uses: azure/login@v2.2.0
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Set up Kubectl
         uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Set up AKS credentials
+        run: az aks get-credentials --resource-group aks-research-cluster_group --name aks-research-cluster
 
       - name: Deploy Services
         run: |
@@ -172,3 +182,28 @@ jobs:
           kubectl apply -f k8s/services/product-service-service.yml
           kubectl apply -f k8s/services/order-service-service.yml
           kubectl apply -f k8s/ingress.yml
+    
+  # Run centralized E2E tests
+  test-e2e:
+    name: Run End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Run E2E Tests
+        run: pnpm jest tests/e2e/ --verbose
+        env:
+          BASE_URL: http://4.227.46.180 # change to ingress
