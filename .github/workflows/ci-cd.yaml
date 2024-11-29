@@ -24,31 +24,18 @@ jobs:
         with:
           install: true
 
-      - name: Set up Docker Layer Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-layer-cache-${{ runner.os }}
-          restore-keys: |
-            docker-layer-cache-
-
-      - name: Build Docker Image with Cache and Load
-        run: |
-          docker buildx build \
-          --cache-from=type=local,src=/tmp/.buildx-cache \
-          --cache-to=type=local,dest=/tmp/.buildx-cache \
-          --tag order-service:latest \
-          --load \
-          ./services/order-service
-
-      - name: Tag Docker Image
-        run: docker tag order-service research4150.azurecr.io/order-service:latest
-
       - name: Login to Azure Container Registry
         run: echo "${{ secrets.ACR_PASSWORD }}" | docker login research4150.azurecr.io -u research4150 --password-stdin
 
-      - name: Push Docker Image to ACR
-        run: docker push research4150.azurecr.io/order-service:latest
+      - name: Build Docker Image with ACR Caching
+        run: |
+          docker buildx build \
+          --cache-from=type=registry,ref=research4150.azurecr.io/order-service-cache \
+          --cache-to=type=registry,ref=research4150.azurecr.io/order-service-cache,mode=max \
+          --tag research4150.azurecr.io/order-service:latest \
+          --push \
+          --progress=plain \
+          ./services/order-service
 
       - name: End Timer and Calculate Duration
         run: |
@@ -78,31 +65,18 @@ jobs:
         with:
           install: true
 
-      - name: Set up Docker Layer Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-layer-cache-${{ runner.os }}
-          restore-keys: |
-            docker-layer-cache-
-
-      - name: Build Docker Image with Cache and Load
-        run: |
-          docker buildx build \
-          --cache-from=type=local,src=/tmp/.buildx-cache \
-          --cache-to=type=local,dest=/tmp/.buildx-cache \
-          --tag product-service:latest \
-          --load \
-          ./services/product-service
-
-      - name: Tag Docker Image
-        run: docker tag product-service research4150.azurecr.io/product-service:latest
-
       - name: Login to Azure Container Registry
         run: echo "${{ secrets.ACR_PASSWORD }}" | docker login research4150.azurecr.io -u research4150 --password-stdin
 
-      - name: Push Docker Image to ACR
-        run: docker push research4150.azurecr.io/product-service:latest
+      - name: Build Docker Image with ACR Caching
+        run: |
+          docker buildx build \
+          --cache-from=type=registry,ref=research4150.azurecr.io/order-service-cache \
+          --cache-to=type=registry,ref=research4150.azurecr.io/order-service-cache,mode=max \
+          --tag research4150.azurecr.io/order-service:latest \
+          --push \
+          --progress=plain \
+          ./services/order-service
 
       - name: End Timer and Calculate Duration
         run: |
@@ -132,31 +106,18 @@ jobs:
         with:
           install: true
 
-      - name: Set up Docker Layer Cache
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-layer-cache-${{ runner.os }}
-          restore-keys: |
-            docker-layer-cache-
-
-      - name: Build Docker Image with Cache and Load
-        run: |
-          docker buildx build \
-          --cache-from=type=local,src=/tmp/.buildx-cache \
-          --cache-to=type=local,dest=/tmp/.buildx-cache \
-          --tag user-service:latest \
-          --load \
-          ./services/user-service
-
-      - name: Tag Docker Image
-        run: docker tag user-service research4150.azurecr.io/user-service:latest
-
       - name: Login to Azure Container Registry
         run: echo "${{ secrets.ACR_PASSWORD }}" | docker login research4150.azurecr.io -u research4150 --password-stdin
 
-      - name: Push Docker Image to ACR
-        run: docker push research4150.azurecr.io/user-service:latest
+      - name: Build Docker Image with ACR Caching
+        run: |
+          docker buildx build \
+          --cache-from=type=registry,ref=research4150.azurecr.io/user-service-cache \
+          --cache-to=type=registry,ref=research4150.azurecr.io/user-service-cache,mode=max \
+          --tag research4150.azurecr.io/user-service:latest \
+          --push \
+          --progress=plain \
+          ./services/user-service
 
       - name: End Timer and Calculate Duration
         run: |
