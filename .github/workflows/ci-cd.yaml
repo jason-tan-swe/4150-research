@@ -1,23 +1,23 @@
 name: CI/CD Pipeline
 
 on:
-  # Trigger the workflow on push to the develop branch
   push:
     branches:
       - '**'
-  # Trigger the workflow on pull requests targeting the develop branch
   pull_request:
     branches:
       - '**'
 
 jobs:
-  # Build Docker images for each service
   build-order-service:
     name: Build Order Service
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
 
       - name: Build Docker Image
         run: docker build -t order-service ./services/order-service
@@ -31,12 +31,28 @@ jobs:
       - name: Push Docker Image to ACR
         run: docker push research4150.azurecr.io/order-service:latest
 
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Build Order Service Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-order-service-timing
+          path: job-duration.txt
+
   build-product-service:
     name: Build Product Service
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
 
       - name: Build Docker Image
         run: docker build -t product-service ./services/product-service
@@ -50,12 +66,28 @@ jobs:
       - name: Push Docker Image to ACR
         run: docker push research4150.azurecr.io/product-service:latest
 
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Build Product Service Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-product-service-timing
+          path: job-duration.txt
+
   build-user-service:
     name: Build User Service
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
 
       - name: Build Docker Image
         run: docker build -t user-service ./services/user-service
@@ -69,6 +101,19 @@ jobs:
       - name: Push Docker Image to ACR
         run: docker push research4150.azurecr.io/user-service:latest
 
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Build User Service Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-user-service-timing
+          path: job-duration.txt
+
   # Run unit and integration tests for each service
   test-order-service:
     name: Test Order Service
@@ -77,6 +122,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -94,6 +142,19 @@ jobs:
         run: |
           cd ./services/order-service
           pnpm jest --testPathPattern=__tests__
+
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Test Order Service Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-order-service-timing
+          path: job-duration.txt
 
   test-product-service:
     name: Test Product Service
@@ -102,6 +163,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -119,6 +183,19 @@ jobs:
         run: |
           cd ./services/product-service
           pnpm jest --testPathPattern=__tests__
+
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Test Product Service Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-product-service-timing
+          path: job-duration.txt
 
   test-user-service:
     name: Test User Service
@@ -127,6 +204,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -144,6 +224,19 @@ jobs:
         run: |
           cd ./services/user-service
           pnpm jest --testPathPattern=__tests__
+
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Test User Service Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-user-service-timing
+          path: job-duration.txt
 
   # Deploy services to Kubernetes
   deploy:
@@ -154,8 +247,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
 
       - name: Authenticate with Azure
         uses: azure/login@v2.2.0
@@ -182,6 +275,19 @@ jobs:
           kubectl apply -f k8s/services/product-service-service.yml
           kubectl apply -f k8s/services/order-service-service.yml
           kubectl apply -f k8s/ingress.yml
+
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Deploy Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-timing
+          path: job-duration.txt
     
   # Run centralized E2E tests
   test-e2e:
@@ -191,6 +297,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Start Timer
+        run: echo "$(date +%s%3N)" > start-time.txt
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -207,3 +316,16 @@ jobs:
         run: pnpm jest tests/e2e/ --verbose
         env:
           BASE_URL: http://4.227.46.180 # change to ingress
+
+      - name: End Timer and Calculate Duration
+        run: |
+          START=$(cat start-time.txt)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+          echo "Test E2E Duration: $DURATION seconds" > job-duration.txt
+
+      - name: Upload Timing Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-e2e-timing
+          path: job-duration.txt
