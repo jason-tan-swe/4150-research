@@ -3,27 +3,26 @@ kind: Ingress
 metadata:
   name: app-ingress
   annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: localhost
-    http:
+  - http:
       paths:
-      - path: /user
+      - path: /users
         pathType: Prefix
         backend:
           service:
             name: user-service
             port:
               number: 8080
-      - path: /product
+      - path: /products
         pathType: Prefix
         backend:
           service:
             name: product-service
             port:
               number: 8081
-      - path: /order
+      - path: /orders
         pathType: Prefix
         backend:
           service:
