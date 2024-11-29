@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: product-service
-        image: product-service:local
+        image: research4150.azurecr.io/product-service:latest
         ports:
         - containerPort: 8081
         volumeMounts:
