@@ -2,6 +2,10 @@
 
 ***Note: All things were done on an M1 Macbook***
 
+[The Paper!](https://github.com/user-attachments/files/18838835/CIS.4150.pdf)
+
+
+----
 
 ## Starting the Project
 
